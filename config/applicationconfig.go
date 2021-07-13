@@ -18,7 +18,6 @@ func InitializeApplicationConfig() {
 	}
 	securityConfig := secure.DefaultConfig()
 	securityConfig.SSLRedirect = false
-	securityConfig.ReferrerPolicy = "strict-origin-when-cross-origin"
 	router := gin.Default()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(secure.New(securityConfig))
