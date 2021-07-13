@@ -12,28 +12,30 @@ import (
 )
 
 const (
-	CREATEUSER = "/user"
-	FRIENDS    = "/user/:userID/friends"
+	USER    = "/user"
+	FRIENDS = "/user/:userID/friends"
 )
 
 type UserController struct {
 	service *userservice.UserService
 }
 
+// NewUserController initialises all the routes for user functions
 func NewUserController(router *gin.RouterGroup, service *userservice.UserService) {
 	controller := UserController{
 		service: service,
 	}
 
-	router.POST(CREATEUSER, controller.createUser)
+	router.POST(USER, controller.createUser)
 	router.PUT(FRIENDS, controller.updateFriends)
 	router.GET(FRIENDS, controller.getFriends)
+	router.GET(USER, controller.getAllUsers)
 
 }
 
 func (c *UserController) createUser(ginCtx *gin.Context) {
 	context := common.CreateLoggableContextFromRequest(ginCtx.Request, logger.Log)
-	context.Logger.Infof("request received for %v", CREATEUSER)
+	context.Logger.Infof("request received for %v", USER)
 
 	var request models.CreateUser
 	if errors.Is(ginCtx.ShouldBindJSON(&request), nil) {
@@ -82,6 +84,25 @@ func (c *UserController) getFriends(ginCtx *gin.Context) {
 
 	userID := ginCtx.Param("userID")
 	resp, err := c.service.GetFriends(context, userID)
+
+	if !errors.Is(err, nil) {
+		ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{
+			"date": "",
+		})
+		context.Logger.Error(err)
+		return
+	}
+
+	ginCtx.SecureJSON(http.StatusOK, gin.H{
+		"data": resp,
+	})
+}
+
+func (c *UserController) getAllUsers(ginCtx *gin.Context) {
+	context := common.CreateLoggableContextFromRequest(ginCtx.Request, logger.Log)
+	context.Logger.Infof("request received for %v", USER)
+
+	resp, err := c.service.GetAllUsers(context)
 
 	if !errors.Is(err, nil) {
 		ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{

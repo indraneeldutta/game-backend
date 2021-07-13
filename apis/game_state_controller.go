@@ -19,6 +19,7 @@ type GameStateController struct {
 	service *gameservice.GameService
 }
 
+// NewGameStateController initialises all the routes for games functions
 func NewGameStateController(router *gin.RouterGroup, service *gameservice.GameService) {
 	controller := GameStateController{
 		service: service,

@@ -16,12 +16,14 @@ type GameService struct {
 	collection *mongo.Collection
 }
 
+// NewGameService initialises game service
 func NewGameService(client *mongo.Client) GameService {
 	return GameService{
 		collection: client.Database(viper.GetString("MONGO.DB_NAME")).Collection("game_state"),
 	}
 }
 
+// SaveGameState saves the game state of the user
 func (s *GameService) SaveGameState(ctx *common.Context, request models.GameState) error {
 	request.CreatedAt = time.Now()
 	_, insertErr := s.collection.InsertOne(ctx.Ctx, request)
@@ -33,6 +35,7 @@ func (s *GameService) SaveGameState(ctx *common.Context, request models.GameStat
 	return nil
 }
 
+// GetGameState retrieves the latest game state of the user
 func (s *GameService) GetGameState(ctx *common.Context, userID string) (models.GameState, error) {
 	var gameState models.GameState
 	findOptions := options.FindOne()
