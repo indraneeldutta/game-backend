@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/game-backend/apis"
+	gameservice "github.com/game-backend/services/game_service"
 	mongoservice "github.com/game-backend/services/mongo_service"
 	userservice "github.com/game-backend/services/user_service"
 	"github.com/gin-contrib/gzip"
@@ -27,10 +28,12 @@ func InitializeApplicationConfig() {
 	mongoClient := mongoservice.NewMongoConnection()
 
 	userService := userservice.NewUserService(mongoClient)
+	gameservice := gameservice.NewGameService(mongoClient)
 
 	v1 := router.Group("/v1")
 
 	apis.NewUserController(v1, &userService)
+	apis.NewGameStateController(v1, &gameservice)
 
 	router.Run(viper.GetString("SERVER_PORT"))
 }

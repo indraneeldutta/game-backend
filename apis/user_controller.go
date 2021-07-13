@@ -38,12 +38,16 @@ func (c *UserController) createUser(ginCtx *gin.Context) {
 			ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{
 				"data": "",
 			})
-			context.Logger.Panic(err)
+			context.Logger.Error(err)
 			return
 		}
 
 		ginCtx.SecureJSON(http.StatusOK, gin.H{
 			"data": resp,
 		})
+		return
 	}
+	ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{
+		"data": "",
+	})
 }
