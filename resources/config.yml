@@ -1,0 +1,8 @@
+SERVER_PORT: ":9000"
+
+MONGO:
+  USER: "admin"
+  PASS: "password"
+  HOST: "localhost"
+  PORT: "27017"
+  SSL: "false"
