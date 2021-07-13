@@ -29,7 +29,7 @@ func NewMongoConnection() *mongo.Client {
 	}
 	logger.Log.Info("Connected to database")
 
-	defer client.Disconnect(ctx)
+	// defer client.Disconnect(ctx)
 
 	return client
 }

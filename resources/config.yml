@@ -5,4 +5,5 @@ MONGO:
   PASS: "password"
   HOST: "localhost"
   PORT: "27017"
+  DB_NAME: "games"
   SSL: "false"

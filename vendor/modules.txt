@@ -49,6 +49,8 @@ github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/leodido/go-urn v1.2.0
 github.com/leodido/go-urn
+# github.com/magefile/mage v1.9.0
+github.com/magefile/mage/mg
 # github.com/magiconair/properties v1.8.1
 github.com/magiconair/properties
 # github.com/mattn/go-isatty v0.0.12
@@ -93,6 +95,10 @@ github.com/xdg-go/scram
 github.com/xdg-go/stringprep
 # github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d
 github.com/youmark/pkcs8
+# go.elastic.co/ecszap v1.0.0
+## explicit
+go.elastic.co/ecszap
+go.elastic.co/ecszap/internal
 # go.mongodb.org/mongo-driver v1.6.0
 ## explicit
 go.mongodb.org/mongo-driver/bson

@@ -1,6 +1,9 @@
 package config
 
 import (
+	"github.com/game-backend/apis"
+	mongoservice "github.com/game-backend/services/mongo_service"
+	userservice "github.com/game-backend/services/user_service"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-contrib/secure"
 	"github.com/gin-gonic/gin"
@@ -21,7 +24,13 @@ func InitializeApplicationConfig() {
 
 	router.Use(gin.Recovery())
 
-	_ = router.Group("/v1")
+	mongoClient := mongoservice.NewMongoConnection()
+
+	userService := userservice.NewUserService(mongoClient)
+
+	v1 := router.Group("/v1")
+
+	apis.NewUserController(v1, &userService)
 
 	router.Run(viper.GetString("SERVER_PORT"))
 }

@@ -8,4 +8,5 @@ import (
 func main() {
 	config.SetupEnvironment()
 	logger.SetUpLogging()
+	config.InitializeApplicationConfig()
 }
