@@ -18,3 +18,9 @@ type UpdateFriendsRequest struct {
 	UserID  string
 	Friends []string `bson:"friends" json:"friends"`
 }
+
+type FriendsData struct {
+	ID        string `bson:"_id" json:"id"`
+	Name      string `bson:"name" json:"name"`
+	HighScore int64  `json:"highscore"`
+}

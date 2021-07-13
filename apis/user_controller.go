@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	CREATEUSER    = "/user"
-	UPDATEFRIENDS = "/user/:userID/friends"
+	CREATEUSER = "/user"
+	FRIENDS    = "/user/:userID/friends"
 )
 
 type UserController struct {
@@ -26,7 +26,9 @@ func NewUserController(router *gin.RouterGroup, service *userservice.UserService
 	}
 
 	router.POST(CREATEUSER, controller.createUser)
-	router.PUT(UPDATEFRIENDS, controller.updateFriends)
+	router.PUT(FRIENDS, controller.updateFriends)
+	router.GET(FRIENDS, controller.getFriends)
+
 }
 
 func (c *UserController) createUser(ginCtx *gin.Context) {
@@ -56,7 +58,7 @@ func (c *UserController) createUser(ginCtx *gin.Context) {
 
 func (c *UserController) updateFriends(ginCtx *gin.Context) {
 	context := common.CreateLoggableContextFromRequest(ginCtx.Request, logger.Log)
-	context.Logger.Infof("request received for %v", UPDATEFRIENDS)
+	context.Logger.Infof("request received for %v", FRIENDS)
 
 	var request models.UpdateFriendsRequest
 	if errors.Is(ginCtx.ShouldBindJSON(&request), nil) {
@@ -72,4 +74,24 @@ func (c *UserController) updateFriends(ginCtx *gin.Context) {
 		return
 	}
 	ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{})
+}
+
+func (c *UserController) getFriends(ginCtx *gin.Context) {
+	context := common.CreateLoggableContextFromRequest(ginCtx.Request, logger.Log)
+	context.Logger.Infof("request received for %v", FRIENDS)
+
+	userID := ginCtx.Param("userID")
+	resp, err := c.service.GetFriends(context, userID)
+
+	if !errors.Is(err, nil) {
+		ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{
+			"date": "",
+		})
+		context.Logger.Error(err)
+		return
+	}
+
+	ginCtx.SecureJSON(http.StatusOK, gin.H{
+		"data": resp,
+	})
 }
