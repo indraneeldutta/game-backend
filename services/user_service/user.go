@@ -8,6 +8,7 @@ import (
 	"github.com/game-backend/models"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -37,4 +38,25 @@ func (s *UserService) CreateUser(ctx *common.Context, request models.CreateUser)
 	}
 
 	return &resp, nil
+}
+
+func (s *UserService) UpdateFriends(ctx *common.Context, request models.UpdateFriendsRequest) error {
+	filter := bson.M{"_id": bson.M{"$eq": request.UserID}}
+	update := bson.M{
+		"$set": bson.M{
+			"friends": request.Friends,
+		},
+	}
+	_, err := s.collection.UpdateOne(
+		ctx.Ctx,
+		filter,
+		update,
+	)
+
+	if !errors.Is(err, nil) {
+		ctx.Logger.Error(err)
+		return err
+	}
+
+	return nil
 }

@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	CREATEUSER = "/user"
+	CREATEUSER    = "/user"
+	UPDATEFRIENDS = "/user/:userID/friends"
 )
 
 type UserController struct {
@@ -25,6 +26,7 @@ func NewUserController(router *gin.RouterGroup, service *userservice.UserService
 	}
 
 	router.POST(CREATEUSER, controller.createUser)
+	router.PUT(UPDATEFRIENDS, controller.updateFriends)
 }
 
 func (c *UserController) createUser(ginCtx *gin.Context) {
@@ -50,4 +52,24 @@ func (c *UserController) createUser(ginCtx *gin.Context) {
 	ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{
 		"data": "",
 	})
+}
+
+func (c *UserController) updateFriends(ginCtx *gin.Context) {
+	context := common.CreateLoggableContextFromRequest(ginCtx.Request, logger.Log)
+	context.Logger.Infof("request received for %v", UPDATEFRIENDS)
+
+	var request models.UpdateFriendsRequest
+	if errors.Is(ginCtx.ShouldBindJSON(&request), nil) {
+		request.UserID = ginCtx.Param("userID")
+		err := c.service.UpdateFriends(context, request)
+		if !errors.Is(err, nil) {
+			ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{})
+			context.Logger.Error(err)
+			return
+		}
+
+		ginCtx.SecureJSON(http.StatusNoContent, gin.H{})
+		return
+	}
+	ginCtx.SecureJSON(http.StatusInternalServerError, gin.H{})
 }

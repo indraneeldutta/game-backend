@@ -13,3 +13,8 @@ type CreateUserResponse struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
+
+type UpdateFriendsRequest struct {
+	UserID  string
+	Friends []string `bson:"friends" json:"friends"`
+}
